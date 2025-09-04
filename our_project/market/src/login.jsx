@@ -1,32 +1,71 @@
-import { useState } from "react"
-import { useNavigate } from 'react-router-dom';
+// Login.jsx
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Login(){
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Seller"); 
-  const navigate = useNavigate(); 
-  
-  const handleLogin = () => {
-    if((role === "Admin" && username === "admin" && password === "1234") || 
-       (role === "Seller" && username === "seller" && password === "0987")){
+  const [role, setRole] = useState(""); // admin or seller
+  const navigate = useNavigate();
+
+  // Default credentials
+  const defaultCredentials = {
+    admin: { username: "admin", password: "admin123" },
+    seller: { username: "seller", password: "seller123" }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!role) {
+      alert("Please select your role!");
+      return;
+    }
+
+    // Check if credentials match the default ones
+    const expected = defaultCredentials[role];
+    if (username === expected.username && password === expected.password) {
       localStorage.setItem("user", role);
-      navigate(role === "Admin" ? "/admin" : "/dashboard");
+      navigate(`/${role}-dashboard`);
     } else {
-      alert("Invalid credentials");
+      alert("Username or password is incorrect!");
     }
   };
-  
-  return(
+
+  return (
     <div className="container">
-      <h2>Login</h2>
-      <input  placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-      <input className="yy" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-      <select value={role} onChange={(e) => setRole(e.target.value)}>
-        <option value="Admin">Admin</option>
-        <option value="Seller">Seller</option>
-      </select>
-      <button onClick={handleLogin}>Login</button>
+      <h2>Login to System</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <select value={role} onChange={(e) => setRole(e.target.value)} required>
+          <option value="">-- Select Role --</option>
+          <option value="admin">Admin</option>
+          <option value="seller">Seller</option>
+        </select>
+
+        <button type="submit">Login</button>
+        
+        <div className="credentials-info">
+          <p><strong>Default credentials:</strong></p>
+          <p>Admin: username = <strong>admin</strong>, password = <strong>admin123</strong></p>
+          <p>Seller: username = <strong>seller</strong>, password = <strong>seller123</strong></p>
+        </div>
+      </form>
     </div>
   );
 }

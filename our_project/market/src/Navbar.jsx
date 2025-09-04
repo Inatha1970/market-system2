@@ -1,8 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
+// Navbar.jsx
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const navigate = useNavigate();
-  const role = localStorage.getItem("user");
+  const user = localStorage.getItem("user");
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -11,19 +12,16 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="logo">Supermarket System</div>
-      <div>
-        {role === "Seller" && (
-          <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/product">Product</Link>
-            <Link to="/sales">Sales</Link>
-          </>
-        )}
-
-        {role === "Admin" && <Link to="/admin">Admin Panel</Link>}
-
-        <button onClick={handleLogout}>Logout</button>
+      <div className="nav-brand">
+        <h2>Sales Management System</h2>
+      </div>
+      <div className="nav-items">
+        <span className="user-info">
+          Role: {user === 'admin' ? 'Admin' : 'Seller'}
+        </span>
+        <button className="btn-logout" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </nav>
   );

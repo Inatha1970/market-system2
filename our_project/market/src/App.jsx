@@ -1,24 +1,35 @@
+// App.jsx
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Login from './login';
+import Login from './Login';
 import AdminDashboard from './AdminDashboard';
 import SellerDashboard from './SellerDashboard';
-import Sales from './Sales';
-
+import { ProductProvider } from './ProductContext';
+import { SalesProvider } from './SalesContext';
 
 function App() {
-  const user = localStorage.getItem("user");
+  // Weka user moja kwa moja kwa ajili ya testing
+  const user = "admin"; // Jaribu "seller" pia
+  const storedUser = localStorage.getItem("user");
+  if (!storedUser) {
+    localStorage.setItem("user", user);
+  }
   
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login/>}/>
-        <Route path="/dashboard" element={user === "seller" ? <SellerDashboard/> : <Navigate to="/login"/>}/>
-        <Route path="/admin" element={user === "admin" ? <AdminDashboard/> : <Navigate to="/login"/>}/>
-        <Route path="/sales" element={user === "seller" ? <Sales/> : <Navigate to="/login"/>}/>
-        <Route path="*" element={<Navigate to={user ? (user === "admin" ? "/admin" : "/dashboard") : "/login"} />}/>
-      </Routes>
-    </Router>
-  )
+    <ProductProvider>
+      <SalesProvider>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/seller-dashboard" element={<SellerDashboard />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="*" element={<Navigate to="/admin-dashboard" />} />
+          </Routes>
+        </Router>
+      </SalesProvider>
+    </ProductProvider>
+  );
 }
 
-export default App
+
+
+export default App;
